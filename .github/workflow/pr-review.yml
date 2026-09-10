@@ -1,0 +1,57 @@
+name: doorbell-review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'project6/**'
+
+permissions:
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Run the tests (the checker)
+        id: tests
+        continue-on-error: true
+        working-directory: project6
+        run: pytest -q > test_output.txt 2>&1
+
+      - name: Build the review comment
+        working-directory: project6
+        run: |
+          if [ "${{ steps.tests.outcome }}" == "success" ]; then
+            echo "## Doorbell review: PASS" > comment.txt
+            echo "" >> comment.txt
+            echo "All tests passed. No issues found." >> comment.txt
+          else
+            echo "## Doorbell review: FAIL" > comment.txt
+            echo "" >> comment.txt
+            echo '```' >> comment.txt
+            cat test_output.txt >> comment.txt
+            echo '```' >> comment.txt
+          fi
+
+      - name: Post the review as a PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('project6/comment.txt', 'utf8');
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });

@@ -1,0 +1,5 @@
+Processing started...
+Chunk 1 done: INFO count = 3701
+Chunk 2 done: WARN count = 778
+Chunk 3 done: ERROR count = 521
+Report written: report.md
