@@ -1,0 +1,52 @@
+name: daily-todo-audit
+
+on:
+  schedule:
+    - cron: '0 9 * * *'   # every day at 9am UTC
+  workflow_dispatch: {}    # lets you fire it manually to test
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5     # budget guard: never let one beat run forever
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Maker - run the audit
+        working-directory: project8
+        run: python audit.py
+
+      - name: Checker - review the changelog
+        id: review
+        working-directory: project8
+        continue-on-error: true
+        run: python reviewer.py
+
+      - name: Commit the spine either way
+        run: |
+          git config user.name "todo-audit-bot"
+          git config user.email "actions@github.com"
+          git add project8/progress.md
+          git diff --cached --quiet || git commit -m "chore: update TODO audit spine"
+          git push
+
+      - name: Connector - open a PR only if the checker passed
+        if: steps.review.outcome == 'success'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: TODO audit"
+          branch: todo-audit/run-${{ github.run_number }}
+          title: "TODO audit - automated"
+          body: |
+            Opened automatically by the daily TODO audit loop.
+            See `project8/progress.md` for the full run history.
+          add-paths: |
+            project8/CHANGELOG.md
