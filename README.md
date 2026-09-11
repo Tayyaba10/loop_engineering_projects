@@ -27,7 +27,7 @@ Each project folder has its own README with exact run instructions.
 | 1 | Watch loop (overnight log processor) | In-session | Done |
 | 2 | Run-until-done (make a condition pass, then stop) | Conditional | Done |
 | 3 | Morning brief with memory | Scheduled | Done |
-| 6 | The Doorbell (reacts to an event) | Event-driven | Not started |
+| 6 | The Doorbell (reacts to an event) | Event-driven | Done |
 
 ## The six parts of any loop (quick reference)
 
