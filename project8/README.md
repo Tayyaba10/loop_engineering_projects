@@ -61,16 +61,17 @@ alone. Each day it will:
   week
 - Open a PR only if the checker is satisfied (well-formed entries, no
   duplicates)
-- Update `progress.md` every single day, whether or not anything was
-  new
+- Include updated `progress.md` in the PR whenever new TODOs are found
+  (no empty PRs or direct pushes to main on days with no new TODOs)
 
 ## What "done" means for this project (from the course)
 
 > Done when it has run unattended for a week and you trust what it
 > ships because you read it, not because you stopped reading.
 
-So after a week, check `project8/progress.md` - you should see 7 dated
-entries, one per day. Read the PRs it opened (if any). Ask yourself
+So after a week, check `project8/progress.md` - you should see the recorded
+TODOs and run history from merged audit PRs, and the Actions tab shows all daily
+runs. Read the PRs it opened (if any). Ask yourself
 honestly:
 
 - Did I actually read what it shipped, or did I start ignoring the PRs

@@ -27,16 +27,7 @@ jobs:
       - name: Checker - review the changelog
         id: review
         working-directory: project8
-        continue-on-error: true
         run: python reviewer.py
-
-      - name: Commit the spine either way
-        run: |
-          git config user.name "todo-audit-bot"
-          git config user.email "actions@github.com"
-          git add project8/progress.md
-          git diff --cached --quiet || git commit -m "chore: update TODO audit spine"
-          git push
 
       - name: Connector - open a PR only if the checker passed
         if: steps.review.outcome == 'success'
@@ -50,3 +41,4 @@ jobs:
             See `project8/progress.md` for the full run history.
           add-paths: |
             project8/CHANGELOG.md
+            project8/progress.md
